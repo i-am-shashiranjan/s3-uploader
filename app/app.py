@@ -15,9 +15,8 @@ S3_PREFIX  = os.environ.get("S3_FOLDER", "user_upload_files/")
 SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE-THIS-TO-RANDOM-STRING")
 
 # AWS Credentials (Netlify will inject these automatically from its dashboard)
-AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-
+AWS_ACCESS_KEY = os.environ.get("MY_AWS_ACCESS_KEY_ID")
+AWS_SECRET_KEY = os.environ.get("MY_AWS_SECRET_ACCESS_KEY")
 # 3. Initialize Flask App
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
