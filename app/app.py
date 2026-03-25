@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 2. --- ENVIRONMENT VARIABLES ---
-AWS_REGION = os.environ.get("AWS_REGION", "ap-south-1")
+AWS_REGION = os.environ.get("MY_AWS_REGION", "ap-south-1")
 S3_BUCKET  = os.environ.get("S3_BUCKET_NAME", "kli-datascience")
 S3_PREFIX  = os.environ.get("S3_FOLDER", "user_upload_files/")
 SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE-THIS-TO-RANDOM-STRING")
@@ -17,6 +17,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE-THIS-TO-RANDOM-STRING")
 # AWS Credentials (Netlify will inject these automatically from its dashboard)
 AWS_ACCESS_KEY = os.environ.get("MY_AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("MY_AWS_SECRET_ACCESS_KEY")
+
 # 3. Initialize Flask App
 app = Flask(__name__)
 app.secret_key = SECRET_KEY
