@@ -33,7 +33,7 @@ s3_client = boto3.client(
 # 5. --- DUMMY CREDENTIALS ---
 # Update this with your actual required username and password
 CREDENTIALS = {
-    "admin": "password123" 
+    "admin": "apna_kaam_kar" 
 }
 
 # 6. --- AUTHENTICATION DECORATOR ---
