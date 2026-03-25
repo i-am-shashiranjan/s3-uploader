@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vaultex · Upload</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/upload.css">
+</head>
+<body>
+<div class="noise"></div>
+<div class="mesh"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 40 40" fill="none">
+        <path d="M20 4L36 12V28L20 36L4 28V12L20 4Z" stroke="currentColor" stroke-width="2"/>
+        <circle cx="20" cy="20" r="5" fill="currentColor"/>
+      </svg>
+    </div>
+    <span>VAULTEX</span>
+  </div>
+  <div class="user-info">
+    <span class="user-pill">👤 {{ username }}</span>
+    <a href="/logout" class="logout-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </a>
+  </div>
+</header>
+
+<!-- ── Bucket badge ── -->
+<div class="bucket-badge">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.22 2 2 0 012.11 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.45-.45a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/>
+  </svg>
+  Saving to: <strong>s3://kli-datascience/user_upload_files/</strong> &nbsp;·&nbsp; Region: <strong>ap-south-1</strong>
+</div>
+
+<main class="main-wrap">
+
+  <div class="upload-card" id="uploadCard">
+    <div class="card-header">
+      <h1>Upload <span class="accent">Files</span></h1>
+      <p>Drop any file — it goes straight to your S3 bucket.</p>
+    </div>
+
+    <!-- Drop zone -->
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" multiple hidden/>
+      <div class="drop-inner" id="dropInner">
+        <div class="drop-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" stroke="currentColor" stroke-width="1.5"
+                    stroke-dasharray="4 4" class="spin-ring"/>
+            <path d="M40 52V28M28 40l12-12 12 12" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M28 56h24" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <p class="drop-title">Drag &amp; drop your file here</p>
+        <p class="drop-sub">— or —</p>
+        <button class="btn-browse" id="browseBtn">Browse Files</button>
+        <p class="drop-note">All file types supported</p>
+      </div>
+    </div>
+
+    <!-- File preview + upload controls -->
+    <div class="file-preview" id="filePreview" style="display:none;">
+
+      <div id="fileListContainer"></div>
+
+      <!-- Progress area (hidden until upload starts) -->
+      <div class="progress-area" id="progressArea" style="display:none;">
+        <div class="progress-header">
+          <span class="progress-label" id="progressLabel">Uploading to S3…</span>
+          <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-bar"  id="progressBar"></div>
+          <div class="progress-glow" id="progressGlow"></div>
+        </div>
+        <p class="progress-sub" id="progressSub">Preparing upload…</p>
+      </div>
+
+      <button class="btn-upload" id="uploadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload to S3
+      </button>
+    </div>
+
+    <!-- Success state -->
+    <div class="success-card" id="successCard" style="display:none;">
+      <div class="success-anim">
+        <svg class="checkmark" viewBox="0 0 80 80">
+          <circle class="check-circle" cx="40" cy="40" r="36" fill="none"
+                  stroke="currentColor" stroke-width="2"/>
+          <path class="check-path" d="M24 40l12 12 20-24" fill="none"
+                stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="success-title">Uploaded! 🎉</h2>
+      <p class="success-msg" id="successMsg">Your file has been saved to S3.</p>
+      <div class="success-meta" id="successMeta"></div>
+      <button class="btn-upload-more" id="uploadMoreBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Upload Another File
+      </button>
+    </div>
+
+  </div><!-- /upload-card -->
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat-item">
+      <span class="stat-val" id="totalUploaded">0</span>
+      <span class="stat-label">Files this session</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val">ap-south-1</span>
+      <span class="stat-label">AWS Region</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val">S3</span>
+      <span class="stat-label">Storage backend</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-val">TLS</span>
+      <span class="stat-label">Encrypted in transit</span>
+    </div>
+  </div>
+
+</main>
+
+<script src="/static/js/upload.js"></script>
+</body>
+</html>
